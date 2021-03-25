@@ -1,0 +1,31 @@
+<head>
+</head>
+
+<title>{% block title %}{% endblock %}</title>
+
+<body>
+	<div name='login heading'>
+		{% if session['username'] %}
+			<form action='#' method='post' name='logout'>
+				<h4>Logged in as {{session['username']}}. <input type='submit' value='Log Out' name='logout'/></h4
+			</form>
+		{% else %}
+		<div style='display:table'>
+			<h4>You are not logged in---</h4>
+			<div style='display:table-cell'>
+				<form action='/login' method='GET' name='login'>
+					<input type='submit' value='Log In' />
+				</form>
+			</div>
+			<div style='display:table-cell'>
+				<form action='/profile/create_new' method='GET'>
+					<input type='submit' value='Register' name='register'/>
+				</form>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+	<div name='content'>
+		{% block content %}{% endblock %}
+	</div>
+</body>

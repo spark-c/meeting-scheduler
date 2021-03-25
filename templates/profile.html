@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}PROFILE{% endblock %}
+{% block content %}
+		<div>
+			<p style='font-weight:bold'>This is your profile page.</p>
+			<p>Username: {{session['username']}}</p>
+			<p>First Name: {{session['firstname']}}</p>
+			<p>Last Name: {{session['lastname']}}</p>
+			<p>Email: {{session['email']}}</p>
+			<p>Password: {{ session['password']|length * '*' }}</p>
+		</div>
+		<div>
+			<h4>Meetings scheduled for {{session['username']}}: {{session['meeting_ids']|length}}</h4>
+		</div>
+		<div>
+			<form action='#' method='post'>
+				<input type='submit' value='Schedule' name='schedule' />
+			</form>
+		</div>
+		<div>
+			{% if session['meeting_ids'] != [] %}
+				{% for printout in meetingsInfo %}
+					<p>{{loop.index}}: {{printout}}</p>
+				{% endfor %}
+			{% else %}
+				<p>No meetings scheduled.</p>
+			{% endif %}	
+		</div>
+{% endblock %}

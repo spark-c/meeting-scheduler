@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}ADMIN{% endblock %}
+{% block content %}
+<div name='userlist'>
+	<h3>Users in database: {{ userList|length }}</h3>
+	<form action='#' method='post'>
+		<p>Delete selected users from database: <input type='submit' name='deleteuser' value='Delete' /></p>
+		{% for item in userList %}
+			<p> <input type='checkbox' name={{loop.index0}} /> {{loop.index}}: {{ item }}</p>
+		{% endfor %}
+	</form>
+	<form action='#' method='post'>
+		<p><b>**CLEAR DATABASE**</b> <input type='submit' name='clearalluser' value='Clear' /></p>
+	</form>
+</div>
+<div name='meetinglist'>
+	<h3>Meetings in database: {{meetingsMaster|length}}</h3>
+	<form action='#' method='post'>
+		<p>Delete selected meetings from database: <input type='submit' name='deletemeeting' value='Unschedule' />
+		{% for item, user in meetingsMaster.items() %}
+			<p><input type='checkbox' name="{{item}}" />{{loop.index}}: {{item}} {{user}}</p>
+		{% endfor %}
+	</form>
+	<form action='#' method='post'>
+		<p>**UNSCHEDULE ALL** <input type='submit' name='clearallmeeting' value='Clear' /></p>
+	</form>
+	<p>end of list</p>
+</div>
+{% endblock %}
