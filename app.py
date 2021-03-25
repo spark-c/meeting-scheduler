@@ -1,13 +1,20 @@
+# meeting-scheduler
+# Collin Sparks, cklsparks@gmail.com, https://github.com/spark-c/meeting-scheduler
+# Python 3
+
 from flask import Flask, session, request, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+import os
+import pprint
 from Models import User, Meeting, db
 import inputValidation as inVa
-import pprint
 
 
 app = Flask(__name__)
-app.secret_key = 'fluffington' #We need this for POST requests
+app.config.from_object(os.environ['APP_SETTINGS'])
+print(os.environ['APP_SETTINGS']) # temporary; confirms which set of vars we're using
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -28,7 +35,7 @@ def home():
 def admin():
     if session.get('username') != 'admin':
         return redirect(url_for('home'))
-        
+
     if request.method == 'POST': #if the user hit the delete button
         if 'logout' in request.form:
             return redirect(url_for('logout'))
