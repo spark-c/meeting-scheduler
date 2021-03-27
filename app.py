@@ -4,6 +4,7 @@
 
 from flask import Flask, session, request, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import datetime
 import os
 import pprint
@@ -15,12 +16,13 @@ app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 print(os.environ['APP_SETTINGS']) # temporary; confirms which set of vars we're using
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.sqlite3'
+# app.config['SQLALCHEMY_DATABASE_URL'] = 'sqlite:///user.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #db = SQLAlchemy(app) used to live here but was moved to Models.py
 db.app = app
 db.init_app(app)
+migrate = Migrate(app, db, compare_type=True)
 
 @app.route("/home", methods=['POST','GET'])
 @app.route("/", methods=['POST','GET'])
@@ -129,6 +131,7 @@ def profile_new():
             user = User(validated) #Once we have an acceptable form
             db.session.add(user)
             db.session.commit()
+            session['user_id'] = User.query.filter_by(username=session['username']).first().id
         else:
             return render_template('profile_new.html', validated=validated)
 

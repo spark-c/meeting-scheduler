@@ -1,12 +1,16 @@
 #Models for the SQLAlchemy database in flask app
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import UUID
 import datetime
+import uuid
 
 db = SQLAlchemy()
 
 class User(db.Model):
-    id = db.Column('id', db.Integer, primary_key=True)
+    __tablename__ = 'user'
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = db.Column(db.String(20), nullable=False)
     firstname = db.Column(db.String(50), nullable=False)
     lastname = db.Column(db.String(50), nullable=False)
@@ -29,12 +33,14 @@ class User(db.Model):
 
 
 class Meeting(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'meeting'
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
     duration = db.Column(db.Interval, nullable=False)
     printout = db.Column(db.String(100), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id'), nullable=False)
 
 
     def __init__(self, start_date, end_date, user):
