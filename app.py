@@ -181,29 +181,29 @@ def login():
         givenPass = request.form['givenPass']
         logAttempt = inVa.check_login(givenName, givenPass)
         if logAttempt[0] == True: # e.g. they logged in correctly
-            user = logAttempt[2] #fetches the correct User object
-            if user != 'admin':
-                session['username'] = user.username
-                session['firstname'] = user.firstname
-                session['lastname'] = user.lastname
-                session['email'] = user.email
-                session['password'] = user.password
-                session['user_id'] = user.id
-                session['meeting_ids'] = []
-                session['permissions'] = user.permissions
-                meetingsBooked = db.session.query(Meeting).filter_by(user_id=user.id).all()
-                for obj in meetingsBooked:
-                    session['meeting_ids'].append(obj.id)
-                return redirect(url_for('profile'))
-            else:
-                session['username'] = inVa.adminLogin[0]
-                session['firstname'] = 'admin'
-                session['lastname'] = 'admin'
-                session['email'] = 'admin@site.com'
-                session['password'] = inVa.adminLogin[1]
-                session['user_id'] = None
-                session['meeting_ids'] = []
-                return redirect(url_for('profile'))
+            user = logAttempt[2] # fetches the correct User object
+            # if user != 'admin':
+            session['username'] = user.username # may remove
+            session['firstname'] = user.firstname
+            session['lastname'] = user.lastname
+            session['email'] = user.email
+            session['password'] = user.password # needs removed
+            session['user_id'] = user.id
+            session['meeting_ids'] = []
+            session['permissions'] = user.permissions
+            meetingsBooked = db.session.query(Meeting).filter_by(user_id=user.id).all()
+            for obj in meetingsBooked:
+                session['meeting_ids'].append(obj.id)
+            return redirect(url_for('profile'))
+            # else:
+            #     session['username'] = inVa.adminLogin[0]
+            #     session['firstname'] = 'admin'
+            #     session['lastname'] = 'admin'
+            #     session['email'] = 'admin@site.com'
+            #     session['password'] = inVa.adminLogin[1]
+            #     session['user_id'] = None
+            #     session['meeting_ids'] = []
+            #     return redirect(url_for('profile'))
         else:
             return render_template('login.html', msg=logAttempt[1])
     else:
@@ -216,6 +216,14 @@ def logout():
         session.clear()
     return redirect(url_for('home'))
 
+
+if User.query.filter_by(permissions='admin').first() == None: # if there is no admin user in the database
+    admin = User(User.admin_template)
+    admin.permissions = 'admin'
+    db.session.add(admin)
+    db.session.commit()
+    print('Admin profile added to database.')
+    print('User: {}\nPW: {}'.format(admin.username, admin.password))
 
 if __name__ == "__main__":
     db.create_all()

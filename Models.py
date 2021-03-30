@@ -10,6 +10,13 @@ db = SQLAlchemy()
 
 class User(db.Model):
     __tablename__ = 'user'
+    admin_template = {
+    'username': 'admin',
+    'firstname': 'admin',
+    'lastname': 'admin',
+    'email': 'admin@site.com',
+    'password': 'password123'
+    }
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = db.Column(db.String(20), nullable=False)
@@ -18,7 +25,7 @@ class User(db.Model):
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(20), nullable=False)
     meetings = db.relationship('Meeting', lazy='select', backref=db.backref('user', lazy='joined'))
-    permissions = db.Column(db.String, nullable=False)
+    permissions = db.Column(db.String(), nullable=False)
 
 
 
