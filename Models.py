@@ -1,4 +1,5 @@
-#Models for the SQLAlchemy database in flask app
+# Models for the SQLAlchemy database in meeting-scheduler
+# Collin Sparks, cklsparks@gmail.com, https://github.com/spark-c/meeting-scheduler
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
@@ -17,6 +18,8 @@ class User(db.Model):
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(20), nullable=False)
     meetings = db.relationship('Meeting', lazy='select', backref=db.backref('user', lazy='joined'))
+    permissions = db.Column(db.String, nullable=False)
+
 
 
     def __init__(self, userInfo):
@@ -26,6 +29,7 @@ class User(db.Model):
         self.email = userInfo['email']
         self.password = userInfo['password']
         self.meetings = []
+        self.permissions = 'user'
 
 
     def __repr__(self):
