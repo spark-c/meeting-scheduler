@@ -35,7 +35,7 @@ def home():
 
 @app.route("/admin", methods=['POST','GET'])
 def admin():
-    if session.get('username') != 'admin':
+    if session.get('permissions') != 'admin':
         return redirect(url_for('home'))
 
     if request.method == 'POST': #if the user hit the delete button
@@ -88,7 +88,7 @@ def admin():
             for index in meetingList:
                 user = User.query.filter_by(id=index.user_id).first()
                 meetingsMaster[index.printout] = f'User: {user.firstname} {user.lastname}'
-                print(meetingsMaster)
+                # print(meetingsMaster)
         return render_template('admin.html', userList=userList, meetingsMaster=meetingsMaster)
 
 
@@ -190,6 +190,7 @@ def login():
                 session['password'] = user.password
                 session['user_id'] = user.id
                 session['meeting_ids'] = []
+                session['permissions'] = user.permissions
                 meetingsBooked = db.session.query(Meeting).filter_by(user_id=user.id).all()
                 for obj in meetingsBooked:
                     session['meeting_ids'].append(obj.id)
